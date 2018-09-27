@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/title_activity_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,12 +20,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SendMessageActivity"
+            android:name=".activity.SendMessageActivity"
             android:label="@string/title_activity_send_message"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".PersonInfoActivity"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activity.MainActivity" />
+        <activity android:name=".activity.PersonInfoActivity"
+            android:parentActivityName=".activity.MainActivity">
         </activity>
     </application>
-
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 </manifest>

@@ -1,13 +1,16 @@
-package com.estafet.dev.firstapp;
+package com.estafet.dev.firstapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.estafet.dev.firstapp.R;
+
+/**
+ * Created by Delcho Delov <delcho.delov@estafet.com>
+ * on 25.09.18
+ */
 public class SendMessageActivity extends AppCompatActivity {
 
 //    private TextView mTextMessage;

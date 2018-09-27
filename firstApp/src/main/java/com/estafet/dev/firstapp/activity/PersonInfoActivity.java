@@ -1,21 +1,35 @@
-package com.estafet.dev.firstapp;
+package com.estafet.dev.firstapp.activity;
 
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.estafet.dev.firstapp.FirstApp;
+import com.estafet.dev.firstapp.R;
 import com.estafet.dev.firstapp.entity.PersonalInfo;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.estafet.dev.firstapp.Utils.DD_MM_YYYY;
+import static com.estafet.dev.firstapp.Utils.getInfoFile;
+
+/**
+ * Created by Delcho Delov <delcho.delov@estafet.com>
+ * on 25.09.18
+ */
 public class PersonInfoActivity extends AppCompatActivity {
-    public static final String DD_MM_YYYY = "dd/MM/yyyy";
-    public static final String YYYY_M_MDD_H_HMMSS = "yyyyMMddHHmmss";
     private PersonalInfo personalInfo;
     private EditText personName, birthDate, weight, height, email, notes;
     @Override
@@ -29,7 +43,7 @@ public class PersonInfoActivity extends AppCompatActivity {
         height = findViewById(R.id.editPersonHeight);
         email = findViewById(R.id.editPersonEmail);
         notes = findViewById(R.id.editPersonNotes);
-        if(this.personalInfo !=null){
+        if(this.personalInfo !=null){// should be!
             personName.setText(this.personalInfo.getName());
             birthDate.setText(this.personalInfo.getName());
             weight.setText(this.personalInfo.getWeight().toString());
@@ -39,20 +53,24 @@ public class PersonInfoActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void savePersonalInfo(View view) {
         if(isValid()){
-            if(personalInfo==null){
-                SimpleDateFormat id_format = new SimpleDateFormat(YYYY_M_MDD_H_HMMSS);
-                Date now = new Date();
-                SimpleDateFormat birthDate_format = new SimpleDateFormat(DD_MM_YYYY);
-                Date bd = new Date();
-                try {
-                    bd = birthDate_format.parse(birthDate.getText().toString());
-                } catch (ParseException ignored) {
-                }
-                final Long id = Long.parseLong(id_format.format(now));
-                personalInfo = new PersonalInfo(id, bd);
-            }
+//            if(personalInfo==null){
+//                SimpleDateFormat birthDate_format = new SimpleDateFormat(DD_MM_YYYY);
+//                Date bd = new Date();
+//                try {
+//                    bd = birthDate_format.parse(birthDate.getText().toString());
+//                } catch (ParseException ignored) {
+//                }
+//
+//                personalInfo = new PersonalInfo(id, bd);
+//            }
+            final SimpleDateFormat birthDate_format = new SimpleDateFormat(DD_MM_YYYY);
+            try{
+                final Date date = birthDate_format.parse(birthDate.getText().toString());
+                personalInfo.setBirthDate(date);
+            }catch (ParseException ignored){}
             personalInfo.setEmail(email.getText().toString());
             final String heightS = this.height.getText().toString();
             if(heightS!=null) {
@@ -65,6 +83,17 @@ public class PersonInfoActivity extends AppCompatActivity {
             personalInfo.setName(personName.getText().toString());
             personalInfo.setNotes(notes.getText().toString());
             ((FirstApp) getApplication()).personalInfo = personalInfo;
+
+            final File infoFile = getInfoFile(personalInfo.getId());
+            try(FileOutputStream out = new FileOutputStream(infoFile)) {
+                personalInfo.writeJsonStream(out);
+            } catch (Exception e) {
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            System.out.println("File saved: "+infoFile.getAbsolutePath());
+
+            //TODO save personal info to device and go to the next screen
+            //personalInfo.writeJsonStream();
             Toast.makeText(getBaseContext(), "Personal info saved", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(getBaseContext(), "Please correct personal information", Toast.LENGTH_SHORT).show();
