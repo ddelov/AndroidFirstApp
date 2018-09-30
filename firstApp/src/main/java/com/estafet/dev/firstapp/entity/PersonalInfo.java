@@ -2,15 +2,21 @@ package com.estafet.dev.firstapp.entity;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.util.JsonReader;
 import android.util.JsonWriter;
+import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import static com.estafet.dev.firstapp.Utils.DD_MM_YYYY;
@@ -86,7 +92,6 @@ public class PersonalInfo implements Serializable {
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void writeJsonStream(OutputStream out) throws IOException {
         SimpleDateFormat birthDate_format = new SimpleDateFormat(DD_MM_YYYY);
 
@@ -114,6 +119,90 @@ public class PersonalInfo implements Serializable {
             writer.endObject();
         }
     }
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static PersonalInfo readFromFile(File file) throws IOException {
+        Long id = null;
+        String name=null;
+        Date birthDate = null;
+        Double weight=null;
+        Double height=null;
+        String email=null;
+        String notes=null;
+        SimpleDateFormat birthDate_format = new SimpleDateFormat(DD_MM_YYYY);
+
+        try(BufferedReader br = new BufferedReader(new FileReader(file));
+            JsonReader reader = new JsonReader(br)) {
+            reader.beginObject();
+            while (reader.hasNext()){
+                String nameToRead = reader.nextName();
+                switch (nameToRead){
+                    case "id":
+                        id = reader.nextLong();break;
+                    case "name":
+                        name = reader.nextString();break;
+                    case "birthDate":
+                        try {
+                            birthDate = birthDate_format.parse(reader.nextString());
+                        } catch (ParseException ignored) {}
+                        break;
+                    case "weight":
+                        weight = reader.nextDouble();break;
+                    case "height":
+                        height = reader.nextDouble();break;
+                    case "email":
+                        email = reader.nextString();break;
+                    case "notes":
+                        notes = reader.nextString();break;
+                        default: reader.skipValue();
+                }
+            }
+            reader.endObject();
+        }
+        if(id!=null){
+            final PersonalInfo res = new PersonalInfo(id);
+            if(name!=null) {
+                res.setName(name);
+            }
+            if(birthDate!=null) {
+                res.setBirthDate(birthDate);
+            }
+            if(weight!=null) {
+                res.setWeight(weight);
+            }
+            if(height!=null) {
+                res.setHeight(height);
+            }
+            if(email!=null) {
+                res.setEmail(email);
+            }
+            if(notes!=null) {
+                res.setNotes(notes);
+            }
+            return res;
+        }
+        return null;
+    }
+
+
+    public String getBirthDateText() {
+        if(birthDate!=null){
+            SimpleDateFormat birthDate_format = new SimpleDateFormat(DD_MM_YYYY);
+            return birthDate_format.format(birthDate);
+        }
+        return null;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void save(File applicationDir) throws IOException {
+        final File baseDir = new File(applicationDir, id.toString());
+
+        final File infoFile = new File(baseDir, name!=null?name:getId().toString() + ".json");
+        try (FileOutputStream out = new FileOutputStream(infoFile)) {
+            writeJsonStream(out);
+        }
+        Log.d("personalInfo","File saved: " + infoFile.getAbsolutePath());
+    }
+
 
 //    public static void main(String[] args) throws IOException {
 //        final PersonalInfo info = new PersonalInfo(22L);

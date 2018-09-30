@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.estafet.dev.firstapp">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".FirstApp"
         android:allowBackup="true"
@@ -23,10 +29,9 @@
             android:name=".activity.SendMessageActivity"
             android:label="@string/title_activity_send_message"
             android:parentActivityName=".activity.MainActivity" />
-        <activity android:name=".activity.PersonInfoActivity"
-            android:parentActivityName=".activity.MainActivity">
-        </activity>
+        <activity
+            android:name=".activity.PersonInfoActivity"
+            android:parentActivityName=".activity.MainActivity"></activity>
     </application>
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 </manifest>
