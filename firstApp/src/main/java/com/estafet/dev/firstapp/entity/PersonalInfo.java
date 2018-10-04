@@ -193,8 +193,8 @@ public class PersonalInfo implements Serializable {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void save(File applicationDir) throws IOException {
-        final File baseDir = new File(applicationDir, id.toString());
+    public void save(final String baseDir) throws IOException {
+//        final File baseDir = new File(applicationDir, id.toString());
 
         final File infoFile = new File(baseDir, name!=null?name:getId().toString() + ".json");
         try (FileOutputStream out = new FileOutputStream(infoFile)) {

@@ -1,59 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="bottom"
     tools:context=".activity.MainActivity">
-
-    <EditText
-        android:id="@+id/messageText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/edit_message"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/sendBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:onClick="sendMessage"
-        android:text="@string/button_send"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/messageText"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/newPersonalInfoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="8dp"
         android:onClick="createNewPatient"
         android:text="@string/newPersInfo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+/>
 
     <Button
         android:id="@+id/loadPersonalInfoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:onClick="loadProfile"
-        android:text="@string/loadPersInfo"
-        app:layout_constraintBaseline_toBaselineOf="@+id/newPersonalInfoBtn"
-        app:layout_constraintStart_toEndOf="@+id/newPersonalInfoBtn" />
+        android:text="@string/loadPersInfo" />
+
+    <ImageButton
+        android:id="@+id/newPictureBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        app:srcCompat="@drawable/baseline_camera_black_18dp"
+        android:onClick="takePicture"
+        />
+
+    <ImageButton
+        android:id="@+id/newVoiceBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        app:srcCompat="@drawable/baseline_mic_black_18dp"
+        android:onClick="startVoiceRecording"
+        />
+
+    <ImageButton
+        android:id="@+id/newTextNoteBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        app:srcCompat="@drawable/edit_text_36p"
+        android:onClick="newTextNote"
+        />
 
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
 <!--</android.support.constraint.ConstraintLayout>-->

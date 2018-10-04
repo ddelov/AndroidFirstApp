@@ -13,7 +13,6 @@ import com.estafet.dev.firstapp.FirstApp;
 import com.estafet.dev.firstapp.R;
 import com.estafet.dev.firstapp.entity.PersonalInfo;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +21,7 @@ import java.util.Date;
 import static com.estafet.dev.firstapp.Utils.DD_MM_YYYY;
 
 /**
+ *
  * Created by Delcho Delov <delcho.delov@estafet.com>
  * on 25.09.18
  */
@@ -89,34 +89,24 @@ public class PersonInfoActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void savePersonalInfo(View view) {
         if (isValid()) {
-//            if(personalInfo==null){
-//                SimpleDateFormat birthDate_format = new SimpleDateFormat(DD_MM_YYYY);
-//                Date bd = new Date();
-//                try {
-//                    bd = birthDate_format.parse(birthDate.getText().toString());
-//                } catch (ParseException ignored) {
-//                }
-//
-//                personalInfo = new PersonalInfo(id, bd);
-//            }
             fromView();
             ((FirstApp) getApplication()).personalInfo = personalInfo;
             //save patients data as file
             try {
-                personalInfo.save(getFilesDir());
+                personalInfo.save(baseDir);
             } catch (IOException e) {
                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
-            //TODO for test only -  remove
-            final File baseDir = new File(getFilesDir(), personalInfo.getId().toString());
-            final File infoFile = new File(baseDir, personalInfo.getName()!=null?personalInfo.getName():personalInfo.getId().toString() + ".json");
-
-            try {
-                PersonalInfo load = PersonalInfo.readFromFile(infoFile);
-            } catch (IOException e) {
-                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+//            //TODO for test only -  remove
+//            final File baseDir = new File(getFilesDir(), personalInfo.getId().toString());
+//            final File infoFile = new File(baseDir, personalInfo.getName() != null ? personalInfo.getName() : personalInfo.getId().toString() + ".json");
+//
+//            try {
+//                PersonalInfo load = PersonalInfo.readFromFile(infoFile);
+//            } catch (IOException e) {
+//                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
             //TODO go to the next screen
             //personalInfo.writeJsonStream();
             Toast.makeText(getBaseContext(), "Personal info saved", Toast.LENGTH_SHORT).show();

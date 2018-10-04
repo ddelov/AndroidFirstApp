@@ -7,7 +7,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="newPersInfo">new</string>
+    <string name="newPersInfo">New</string>
     <string name="loadPersInfo">Load</string>
     <string name="load_existing_patient_profile">Load existing patient profile</string>
 </resources>

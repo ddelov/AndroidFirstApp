@@ -9,6 +9,6 @@ import com.estafet.dev.firstapp.entity.PersonalInfo;
  * on 25.09.18
  */
 public class FirstApp extends Application {
-    public String folderPath;
+    public String basePath;
     public PersonalInfo personalInfo;
 }

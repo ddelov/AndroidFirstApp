@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.estafet.dev.firstapp.FirstApp;
@@ -34,11 +33,13 @@ public class MainActivity extends AppCompatActivity {
     public static final String VOICE = "voice/";
 
     private PersonalInfo personalInfo;
+    private String basePath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         personalInfo = ((FirstApp) getApplication()).personalInfo;
+        basePath = ((FirstApp) getApplication()).basePath;
     }
 
     public void createNewPatient(View view) {
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         final Long id = Long.parseLong(id_format.format(now));
         PersonalInfo personalInfo = new PersonalInfo(id);
         //2. create base directory structure
+        final File appplicationDir = getFilesDir();//Environment.getExternalStorageDirectory();
+        final File baseDir = new File(appplicationDir, id.toString());
+        ((FirstApp) getApplication()).basePath = baseDir.getAbsolutePath();
 
         if(!createDirectoryStructure(id)){
             Toast.makeText(MainActivity.this, "Could not create directory structure for the application", Toast.LENGTH_SHORT).show();
@@ -91,8 +95,10 @@ public class MainActivity extends AppCompatActivity {
                 for (Path path : paths) {
                     System.out.println("path = " + path);
                 }
-                final PersonalInfo personalInfo = PersonalInfo.readFromFile(paths.get(0).toFile());
-                ((FirstApp) getApplication()).personalInfo = personalInfo;
+                if(!paths.isEmpty()) {
+                    final PersonalInfo personalInfo = PersonalInfo.readFromFile(paths.get(0).toFile());
+                    ((FirstApp) getApplication()).personalInfo = personalInfo;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,18 +130,18 @@ public class MainActivity extends AppCompatActivity {
 //            });
     }
 
-    public void sendMessage(View view) {
-        final TextView textView = findViewById(R.id.messageText);
-        final Intent intent = new Intent(this, SendMessageActivity.class);
-        intent.putExtra(MESSAGE_TO_SEND, textView.getText().toString());
-        startActivity(intent);
-    }
+//    public void sendMessage(View view) {
+//        final TextView textView = findViewById(R.id.messageText);
+//        final Intent intent = new Intent(this, SendMessageActivity.class);
+//        intent.putExtra(MESSAGE_TO_SEND, textView.getText().toString());
+//        startActivity(intent);
+//    }
 
     private boolean createDirectoryStructure(Long id) {
-        final File appplicationDir = getFilesDir();
-        final File baseDir = new File(appplicationDir, id.toString());
-        final File photosDir = new File(baseDir, PHOTOS);
-        final File voiceDir = new File(baseDir, VOICE);
+//        final File appplicationDir = getFilesDir();
+//        final File baseDir = new File(appplicationDir, id.toString());
+        final File photosDir = new File(basePath, PHOTOS);
+        final File voiceDir = new File(basePath, VOICE);
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //            try {
@@ -154,4 +160,15 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public void takePicture(View view) {
+        final Intent intent = new Intent(this, ImagePickerActivity.class);
+        startActivity(intent);
+    }
+    public void startVoiceRecording(View view) {
+        final Intent intent = new Intent(this, VoiceMemoActivity.class);
+        startActivity(intent);
+    }
+    public void newTextNote(View view) {
+        Toast.makeText(MainActivity.this, "This functionality is not ready", Toast.LENGTH_SHORT).show();
+    }
 }
