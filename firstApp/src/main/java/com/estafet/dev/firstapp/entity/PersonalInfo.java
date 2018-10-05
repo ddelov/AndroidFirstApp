@@ -2,10 +2,8 @@ package com.estafet.dev.firstapp.entity;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.JsonReader;
 import android.util.JsonWriter;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -91,7 +89,7 @@ public class PersonalInfo implements Serializable {
         this.notes = notes;
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
+//    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void writeJsonStream(OutputStream out) throws IOException {
         SimpleDateFormat birthDate_format = new SimpleDateFormat(DD_MM_YYYY);
 
@@ -192,29 +190,12 @@ public class PersonalInfo implements Serializable {
         return null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void save(final String baseDir) throws IOException {
-//        final File baseDir = new File(applicationDir, id.toString());
-
-        final File infoFile = new File(baseDir, name!=null?name:getId().toString() + ".json");
+    public void save(final File infoFile) throws IOException {
         try (FileOutputStream out = new FileOutputStream(infoFile)) {
+
             writeJsonStream(out);
         }
-        Log.d("personalInfo","File saved: " + infoFile.getAbsolutePath());
+
     }
 
-
-//    public static void main(String[] args) throws IOException {
-//        final PersonalInfo info = new PersonalInfo(22L);
-//        info.setEmail("forget@about.it");
-//        final Calendar cal = Calendar.getInstance();
-//        cal.set(Calendar.YEAR, 1928);
-//        cal.set(Calendar.MONTH, Calendar.AUGUST);
-//        cal.set(Calendar.DAY_OF_MONTH, 14);
-//        info.setBirthDate(new Date(cal.getTimeInMillis()));
-//        info.setName("Unknown rabbit");
-//        info.setHeight(23.44454);
-//        info.setWeight(456.890);
-//        info.setNotes("нямам представа какво да очаквам");
-//    }
 }

@@ -10,4 +10,5 @@
     <string name="newPersInfo">New</string>
     <string name="loadPersInfo">Load</string>
     <string name="load_existing_patient_profile">Load existing patient profile</string>
+    <string name="take_photo">Take photo</string>
 </resources>

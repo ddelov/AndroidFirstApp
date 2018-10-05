@@ -88,8 +88,23 @@ public class VoiceMemoActivity extends AppCompatActivity {
      * Starts a new recording.
      */
     public void start(final String outputFile) throws IOException {
-        checkStorageLocation(outputFile);
-
+        try {
+            checkStorageLocation(outputFile);
+        } catch (IOException e) {
+            Toast.makeText(VoiceMemoActivity.this, "Could not create storage location",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        Toast.makeText(VoiceMemoActivity.this, "storage location OK",
+                Toast.LENGTH_LONG).show();
+//        if (ActivityCompat.checkSelfPermission(VoiceMemoActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+//
+//            ActivityCompat.requestPermissions(VoiceMemoActivity.this, new String[]{Manifest.permission.RECORD_AUDIO},
+//                    BuildDev.RECORD_AUDIO);
+//
+//        } else {
+//            startRecording();
+//        }
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);

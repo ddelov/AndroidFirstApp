@@ -86,7 +86,7 @@ public class ImagePickerActivity extends AppCompatActivity {
             Toast.makeText(ImagePickerActivity.this, "Storage location unavailable",
                     Toast.LENGTH_LONG).show();
         }
-        try(FileOutputStream fos = new FileOutputStream(photosDir + "ph"+nameId+".jpg")) {
+        try(FileOutputStream fos = new FileOutputStream(photoFile)) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 75, fos);
             fos.flush();
         } catch (Exception e) {

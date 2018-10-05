@@ -1,8 +1,8 @@
 package com.estafet.dev.firstapp.activity;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -12,14 +12,12 @@ import com.estafet.dev.firstapp.R;
 import com.estafet.dev.firstapp.entity.PersonalInfo;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.estafet.dev.firstapp.Utils.YYYY_MM_DD_HHMMSS;
 
@@ -34,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private PersonalInfo personalInfo;
     private String basePath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +50,12 @@ public class MainActivity extends AppCompatActivity {
         final Long id = Long.parseLong(id_format.format(now));
         PersonalInfo personalInfo = new PersonalInfo(id);
         //2. create base directory structure
-        final File appplicationDir = getFilesDir();//Environment.getExternalStorageDirectory();
-        final File baseDir = new File(appplicationDir, id.toString());
-        ((FirstApp) getApplication()).basePath = baseDir.getAbsolutePath();
+        final File applicationDir = /*getFilesDir();//*/Environment.getExternalStorageDirectory();
+        final File baseDir = new File(applicationDir, id.toString());
+        basePath = baseDir.getAbsolutePath();
+        ((FirstApp) getApplication()).basePath = basePath;
 
-        if(!createDirectoryStructure(id)){
+        if (!createDirectoryStructure(id)) {
             Toast.makeText(MainActivity.this, "Could not create directory structure for the application", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -66,68 +66,61 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void editProfile(View view){
-        if(((FirstApp) getApplication()).personalInfo!=null) {
+    public void editProfile(View view) {
+        if (((FirstApp) getApplication()).personalInfo != null) {
             final Intent intent = new Intent(this, PersonInfoActivity.class);
             startActivity(intent);
-        }else{
+        } else {
             Toast.makeText(MainActivity.this, "Please choose patient profile first", Toast.LENGTH_SHORT).show();
         }
     }
-    public void loadProfile(View view) {
-//        final File baseDir = new File(getFilesDir(), personalInfo.getId().toString());
-//        //final File infoFile = new File(baseDir, personalInfo.getName()!=null?personalInfo.getName():personalInfo.getId().toString() + ".json");
-//        final String[] list = baseDir.list(new FilenameFilter() {
-//            @Override
-//            public boolean accept(File dir, String name) {
-//                if (name.endsWith(".json")) {
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-        try {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                final List<Path> paths = Files.walk(Paths.get(getFilesDir().getPath()))
-                        .filter(/*name -> name.endsWith(".json")*/Files::isRegularFile)
-                        .collect(Collectors.toList());
-                for (Path path : paths) {
-                    System.out.println("path = " + path);
+    public void loadProfile(View view) {
+            final File applicationDir = /*getFilesDir();//*/Environment.getExternalStorageDirectory();
+            final String[] profileDirectories = applicationDir.list(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    if(dir.isDirectory() && name.matches("\\d+")){
+                        return true;
+                    }
+                    return false;
                 }
-                if(!paths.isEmpty()) {
-                    final PersonalInfo personalInfo = PersonalInfo.readFromFile(paths.get(0).toFile());
+            });
+
+        if (profileDirectories.length > 0) {
+            List<String> paths = new ArrayList<>();
+            for (String directory : profileDirectories) {
+                File prDir = new File(applicationDir, directory);
+                final String[] list = prDir.list(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File dir, String name) {
+                        if (name.endsWith(".json")) {
+                            File f = new File(prDir, name);
+                            paths.add(f.getAbsolutePath());
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+//                if(list!=null && list.length>0){
+//                    File f = new File()
+//                    paths.add(list[0]);
+//                }
+            }
+            if(!paths.isEmpty()) {
+                try {
+                    File f = new File(paths.get(0));
+                    final PersonalInfo personalInfo = PersonalInfo.readFromFile(f);
                     ((FirstApp) getApplication()).personalInfo = personalInfo;
+                    ((FirstApp) getApplication()).basePath = f.getParent();
+                    editProfile(view);
+                    final Intent intent = new Intent(this, PersonInfoActivity.class);
+                    startActivity(intent);
+                } catch (IOException e) {
+                    Toast.makeText(MainActivity.this, "Could not open file", Toast.LENGTH_SHORT).show();
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        editProfile(view);
-        final Intent intent = new Intent(this, PersonInfoActivity.class);
-        startActivity(intent);
-//            //create a dialog to show a list of files and directories
-//            AlertDialog.Builder builder = new AlertDialog.Builder(/*context*/this);
-//            builder.setCancelable(true);
-//            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    //TODO
-//
-//                    dialog.cancel();
-//                }
-//            });
-//            builder.setNeutralButton("Up",null);
-//            builder.setView(getList(path));
-//            AlertDialog dialog = builder.create();
-//            dialog.show();
-//            //override the default dialog default behavior when the Up button is pressed
-//            dialog.getButton(Dialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
-//
-//                public void onClick(View arg0) {
-//                    upOneLevel();
-//                }
-//            });
     }
 
 //    public void sendMessage(View view) {
@@ -151,10 +144,10 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }
 
-        if(!photosDir.mkdirs()){
+        if (!photosDir.mkdirs()) {
             return false;
         }
-        if(!voiceDir.mkdirs()){
+        if (!voiceDir.mkdirs()) {
             return false;
         }
         return true;
@@ -164,10 +157,12 @@ public class MainActivity extends AppCompatActivity {
         final Intent intent = new Intent(this, ImagePickerActivity.class);
         startActivity(intent);
     }
+
     public void startVoiceRecording(View view) {
         final Intent intent = new Intent(this, VoiceMemoActivity.class);
         startActivity(intent);
     }
+
     public void newTextNote(View view) {
         Toast.makeText(MainActivity.this, "This functionality is not ready", Toast.LENGTH_SHORT).show();
     }
