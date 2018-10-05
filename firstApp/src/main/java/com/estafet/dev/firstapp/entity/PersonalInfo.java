@@ -27,14 +27,25 @@ import static com.estafet.dev.firstapp.Utils.DD_MM_YYYY;
 public class PersonalInfo implements Serializable {
     private final Long id;
     private String name;
+    private String nationality;
+    private String address;
+    private String county;
+    private String telephone;
+    private Integer age;
     private Date birthDate;
-    private Double weight;
-    private Double height;
-    private String email;
-    private String notes;
+    private Gender gender;
+    private String examLocation;
+    private Date examDate = new Date();
+    private String examStartTime;
+    private String examEndTime;
+    private Boolean interpreterUsed = false;
+    private String interpreterName;
+    private String languageUsed;
+    private String interpreterPhone;
 
     public PersonalInfo(Long id) {
         this.id = id;
+        name = id.toString();
     }
 
     public Long getId() {
@@ -57,36 +68,116 @@ public class PersonalInfo implements Serializable {
         this.name = name;
     }
 
-    public Double getWeight() {
-        return weight;
+    public String getNationality() {
+        return nationality;
     }
 
-    public void setWeight(Double weight) {
-        this.weight = weight;
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 
-    public Double getHeight() {
-        return height;
+    public String getAddress() {
+        return address;
     }
 
-    public void setHeight(Double height) {
-        this.height = height;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getEmail() {
-        return email;
+    public String getCounty() {
+        return county;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCounty(String county) {
+        this.county = county;
     }
 
-    public String getNotes() {
-        return notes;
+    public String getTelephone() {
+        return telephone;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public String getExamLocation() {
+        return examLocation;
+    }
+
+    public void setExamLocation(String examLocation) {
+        this.examLocation = examLocation;
+    }
+
+    public Date getExamDate() {
+        return examDate;
+    }
+
+    public void setExamDate(Date examDate) {
+        this.examDate = examDate;
+    }
+
+    public String getExamStartTime() {
+        return examStartTime;
+    }
+
+    public void setExamStartTime(String examStartTime) {
+        this.examStartTime = examStartTime;
+    }
+
+    public String getExamEndTime() {
+        return examEndTime;
+    }
+
+    public void setExamEndTime(String examEndTime) {
+        this.examEndTime = examEndTime;
+    }
+
+    public Boolean getInterpreterUsed() {
+        return interpreterUsed;
+    }
+
+    public void setInterpreterUsed(Boolean interpreterUsed) {
+        this.interpreterUsed = interpreterUsed;
+    }
+
+    public String getInterpreterName() {
+        return interpreterName;
+    }
+
+    public void setInterpreterName(String interpreterName) {
+        this.interpreterName = interpreterName;
+    }
+
+    public String getLanguageUsed() {
+        return languageUsed;
+    }
+
+    public void setLanguageUsed(String languageUsed) {
+        this.languageUsed = languageUsed;
+    }
+
+    public String getInterpreterPhone() {
+        return interpreterPhone;
+    }
+
+    public void setInterpreterPhone(String interpreterPhone) {
+        this.interpreterPhone = interpreterPhone;
     }
 
 //    @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -102,79 +193,199 @@ public class PersonalInfo implements Serializable {
             if (getBirthDate() != null) {
                 writer.name("birthDate").value(birthDate_format.format(getBirthDate()));
             }
-            if (getWeight() != null) {
-                writer.name("weight").value(getWeight());
+
+            if (getNationality() != null) {
+                writer.name("nationality").value(getNationality());
             }
-            if (getHeight() != null) {
-                writer.name("height").value(getHeight());
+            if (getAddress() != null) {
+                writer.name("address").value(getAddress());
             }
-            if (getEmail() != null) {
-                writer.name("email").value(getEmail());
+            if (getCounty() != null) {
+                writer.name("county").value(getCounty());
             }
-            if (getNotes() != null) {
-                writer.name("notes").value(getNotes());
+            if (getTelephone() != null) {
+                writer.name("telephone").value(getTelephone());
             }
+
+            if (getAge() != null) {
+                writer.name("age").value(getAge());
+            }
+            if (getBirthDateText() != null) {
+                writer.name("birthDate").value(getBirthDateText());
+            }
+            if (getGender() != null) {
+                writer.name("gender").value(getGender().name());
+            }
+            if (getExamLocation() != null) {
+                writer.name("examLocation").value(getExamLocation());
+            }
+
+            if (getExamDate() != null) {
+                writer.name("examDate").value(getExamDateText());
+            }
+            if (getExamStartTime() != null) {
+                writer.name("examStartTime").value(getExamStartTime());
+            }
+            if (getExamEndTime() != null) {
+                writer.name("examEndTime").value(getExamEndTime());
+            }
+            if (getInterpreterUsed() != null) {
+                writer.name("interpreterUsed").value(getInterpreterUsed());
+            }
+            if (getInterpreterName() != null) {
+                writer.name("interpreterName").value(getInterpreterName());
+            }
+            if (getLanguageUsed() != null) {
+                writer.name("languageUsed").value(getLanguageUsed());
+            }
+            if (getInterpreterPhone() != null) {
+                writer.name("interpreterPhone").value(getInterpreterPhone());
+            }
+
+
             writer.endObject();
         }
     }
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static PersonalInfo readFromFile(File file) throws IOException {
         Long id = null;
-        String name=null;
+        String name = null;
         Date birthDate = null;
-        Double weight=null;
-        Double height=null;
-        String email=null;
-        String notes=null;
+        String nationality = null;
+        String address = null;
+        String county = null;
+        String telephone = null;
+        Integer age = null;
+        Gender gender = null;
+        String examLocation = null;
+        Date examDate = null;
+        String examStartTime = null;
+        String examEndTime = null;
+        Boolean interpreterUsed = null;
+        String interpreterName = null;
+        String languageUsed = null;
+        String interpreterPhone = null;
         SimpleDateFormat birthDate_format = new SimpleDateFormat(DD_MM_YYYY);
 
-        try(BufferedReader br = new BufferedReader(new FileReader(file));
-            JsonReader reader = new JsonReader(br)) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file));
+             JsonReader reader = new JsonReader(br)) {
             reader.beginObject();
-            while (reader.hasNext()){
+            while (reader.hasNext()) {
                 String nameToRead = reader.nextName();
-                switch (nameToRead){
+                switch (nameToRead) {
                     case "id":
-                        id = reader.nextLong();break;
+                        id = reader.nextLong();
+                        break;
                     case "name":
-                        name = reader.nextString();break;
+                        name = reader.nextString();
+                        break;
                     case "birthDate":
                         try {
                             birthDate = birthDate_format.parse(reader.nextString());
-                        } catch (ParseException ignored) {}
+                        } catch (ParseException ignored) {
+                        }
                         break;
-                    case "weight":
-                        weight = reader.nextDouble();break;
-                    case "height":
-                        height = reader.nextDouble();break;
-                    case "email":
-                        email = reader.nextString();break;
-                    case "notes":
-                        notes = reader.nextString();break;
-                        default: reader.skipValue();
+                    case "nationality":
+                        nationality = reader.nextString();
+                        break;
+                    case "address":
+                        address = reader.nextString();
+                        break;
+                    case "county":
+                        county = reader.nextString();
+                        break;
+                    case "telephone":
+                        telephone = reader.nextString();
+                        break;
+                    case "age":
+                        age = reader.nextInt();
+                        break;
+                    case "gender":
+                        gender = Gender.valueOf(reader.nextString());
+                        break;
+                    case "examLocation":
+                        examLocation = reader.nextString();
+                        break;
+                    case "examDate":
+                        try {
+                            examDate = birthDate_format.parse(reader.nextString());
+                        } catch (ParseException ignored) {
+                        }
+                        break;
+                    case "examStartTime":
+                        examStartTime = reader.nextString();
+                        break;
+                    case "examEndTime":
+                        examEndTime = reader.nextString();
+                        break;
+                    case "interpreterUsed":
+                        interpreterUsed = reader.nextBoolean();
+                        break;
+                    case "interpreterName":
+                        interpreterName = reader.nextString();
+                        break;
+                    case "languageUsed":
+                        languageUsed = reader.nextString();
+                        break;
+                    case "interpreterPhone":
+                        interpreterPhone = reader.nextString();
+                        break;
+                    default:
+                        reader.skipValue();
                 }
             }
             reader.endObject();
         }
-        if(id!=null){
+        if (id != null) {
             final PersonalInfo res = new PersonalInfo(id);
-            if(name!=null) {
+            if (name != null) {
                 res.setName(name);
             }
-            if(birthDate!=null) {
+            if (birthDate != null) {
                 res.setBirthDate(birthDate);
             }
-            if(weight!=null) {
-                res.setWeight(weight);
+            if (nationality != null) {
+                res.setNationality(nationality);
             }
-            if(height!=null) {
-                res.setHeight(height);
+            if (address != null) {
+                res.setAddress(address);
             }
-            if(email!=null) {
-                res.setEmail(email);
+            if (county != null) {
+                res.setCounty(county);
             }
-            if(notes!=null) {
-                res.setNotes(notes);
+            if (telephone != null) {
+                res.setTelephone(telephone);
+            }
+            if (age != null) {
+                res.setAge(age);
+            }
+            if (gender != null) {
+                res.setGender(gender);
+            }
+            if (examLocation != null) {
+                res.setExamLocation(examLocation);
+            }
+            if (examDate != null) {
+                res.setExamDate(examDate);
+            }
+            if (examStartTime != null) {
+                res.setExamStartTime(examStartTime);
+            }
+            if (examEndTime != null) {
+                res.setExamEndTime(examEndTime);
+            }
+            if (interpreterUsed != null) {
+                res.setInterpreterUsed(interpreterUsed);
+            }
+            if (interpreterName != null) {
+                res.setInterpreterName(interpreterName);
+            }
+            if (languageUsed != null) {
+                res.setLanguageUsed(languageUsed);
+            }
+            if (interpreterPhone != null) {
+                res.setInterpreterPhone(interpreterPhone);
             }
             return res;
         }
@@ -183,9 +394,17 @@ public class PersonalInfo implements Serializable {
 
 
     public String getBirthDateText() {
-        if(birthDate!=null){
+        if (birthDate != null) {
             SimpleDateFormat birthDate_format = new SimpleDateFormat(DD_MM_YYYY);
             return birthDate_format.format(birthDate);
+        }
+        return null;
+    }
+
+    public String getExamDateText() {
+        if (examDate != null) {
+            SimpleDateFormat date_format = new SimpleDateFormat(DD_MM_YYYY);
+            return date_format.format(examDate);
         }
         return null;
     }
